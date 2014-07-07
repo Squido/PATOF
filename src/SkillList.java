@@ -6,7 +6,7 @@ public class SkillList {
 	private static List<String> list = new ArrayList<String>();
 
 	public SkillList() {
-		File file = new File("cards.txt");
+		File file = new File("cards.txt"); //skills.txt
 		Scanner in = null;
 		try {
 			in = new Scanner(file);
