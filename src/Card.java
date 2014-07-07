@@ -60,7 +60,7 @@ public class Card extends JPanel {
 			if (line[i] != ' ') {
 				j = j * 10 + (line[i] - 48);
 			}
-			skillz.add(SkillFactory.getSkill(SkillList.get(i)));
+			skillz.add(SkillFactory.getSkill(i));
 			j = 0;
 			i++;
 		}
@@ -81,7 +81,7 @@ public class Card extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.drawImage(border, 0, 0, null);
-		g.drawImage(img, 30, 30, null);
+		//g.drawImage(img, 30, 30, null);
 	}
 
 	public int getAtt() {

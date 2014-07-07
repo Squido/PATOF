@@ -13,16 +13,8 @@ public class SkillList {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		String tmp, name;
-		char[] line;
 		while (in.hasNextLine()) {
-			name = "";
-			tmp = in.nextLine() + "\n";
-			line = tmp.toCharArray();
-			for (int i = 0; line[i] != ';'; i++) {
-				name += line[i];
-			}
-			list.add(name);
+			list.add(in.nextLine());
 		}
 	}
 

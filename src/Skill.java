@@ -1,3 +1,3 @@
-public abstract class Skill {
-
+public interface Skill {
+	public void perform();	
 }
