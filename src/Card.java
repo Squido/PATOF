@@ -60,7 +60,7 @@ public class Card extends JPanel {
 			if (line[i] != ' ') {
 				j = j * 10 + (line[i] - 48);
 			}
-			skillz.add(new Skill(j, this));
+			skillz.add(SkillFactory.getSkill(SkillList.get(i)));
 			j = 0;
 			i++;
 		}
