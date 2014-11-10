@@ -1,15 +1,21 @@
+package GUI;
 import java.awt.*;
 
 import javax.swing.*;
 
+import cont.GUIController;
+import mod.Card;
+
 @SuppressWarnings("serial")
-public class GUI extends JFrame {
+public class GameWindow extends JFrame {
+	GUIController controller;
 	private JPanel board = new JPanel();
 	private JPanel hand = new JPanel();
 	private JPanel opphand = new JPanel();
 	private JPanel card = new Card(1);
 	
-	public GUI(){
+	public GameWindow(GUIController gui){
+		controller = gui;
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setBackground(Color.white);
 		this.setLayout(new BorderLayout());

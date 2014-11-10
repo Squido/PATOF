@@ -1,3 +1,5 @@
+package mod;
+
 public abstract class SkillFactory {
 	public static Skill getSkill(int id){
 		String name = SkillList.get(id);
