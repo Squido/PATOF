@@ -9,11 +9,10 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 @SuppressWarnings("serial")
-public class Card extends JPanel {
+public class Card{
 	private String name;
 	private int att, hp, def, cost;
 	private boolean magic, dist, counter;
-	private BufferedImage img, border;
 	List<Skill> skillz = new ArrayList<Skill>();
 
 	public Card(int id) {
@@ -66,24 +65,8 @@ public class Card extends JPanel {
 			i++;
 		}
 		setCounter(false);
-		try {
-			this.img = ImageIO.read(new File(tmp));
-		} catch (IOException ex) {
-		}
-		try {
-			border = ImageIO.read(new File("s_border.jpg"));
-		} catch (IOException ex) {
-		}
-		this.setPreferredSize(new Dimension(100, 140));
-		repaint();
 	}
 
-	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		g.drawImage(border, 0, 0, null);
-		//g.drawImage(img, 30, 30, null);
-	}
 
 	public int getAtt() {
 		return att;
