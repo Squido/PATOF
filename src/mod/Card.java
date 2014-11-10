@@ -9,6 +9,9 @@ public abstract class Card {
 	protected List<Skill> skillz = new ArrayList<Skill>();
 
 	public int getAtt() {
+		if (att < 0) {
+			return 0;
+		}
 		return att;
 	}
 
@@ -25,6 +28,9 @@ public abstract class Card {
 	}
 
 	public int getDef() {
+		if (def < 0) {
+			return 0;
+		}
 		return def;
 	}
 
@@ -33,6 +39,9 @@ public abstract class Card {
 	}
 
 	public int getCost() {
+		if (cost < 0) {
+			return 0;
+		}
 		return cost;
 	}
 
