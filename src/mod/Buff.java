@@ -57,8 +57,8 @@ public class Buff {
 			try {
 				x = (int) get.invoke(target) + value;
 			} catch (IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException e1) {
-				e1.printStackTrace();
+					| InvocationTargetException e) {
+				e.printStackTrace();
 			}
 			try {
 				set.invoke(target, x);
