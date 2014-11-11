@@ -8,6 +8,7 @@ public class GUIController {
 	GameWindow gameWindow;
 	MainMenu mainMenu;
 	OptionsWindow optionsWindow;
+	private static Turn turn;
 	
 	public GUIController(){
 		showNewMainMenu();
@@ -27,6 +28,7 @@ public class GUIController {
 	public void showNewGameWindow(){
 		gameWindow = new GameWindow(this);
 		gameWindow.setVisible(true);
+		setTurn(new Turn());
 	}
 	public void closeGameWindow(){
 		gameWindow.setVisible(false);
@@ -39,5 +41,13 @@ public class GUIController {
 	public void closeOptionsWindow(){
 		optionsWindow.setVisible(false);
 		optionsWindow = null;
+	}
+
+	public static Turn getTurn() {
+		return turn;
+	}
+
+	public static void setTurn(Turn turn) {
+		GUIController.turn = turn;
 	}
 }
