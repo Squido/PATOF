@@ -1,59 +1,62 @@
 package GUI;
 import java.awt.*;
-import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import cont.GUIController;
 
-@SuppressWarnings("serial")
 public class GameWindow extends JFrame {
 	GUIController controller;
 	private JPanel board = new JPanel();
-	private JPanel hand = new JPanel();
-	private JPanel opphand = new JPanel();
-	private JPanel cardsOnBoard[][];
-	private JPanel oppCardsOnBoard[][];
+	private Hand myHand;
+	private Hand oppHand;
+	private Card myCardsOnBoard[][];
+	private Card oppCardsOnBoard[][];
 
 	
 	public GameWindow(GUIController gui){
 		
 		controller = gui;
-		cardsOnBoard = new JPanel[2][5];
-		oppCardsOnBoard = new JPanel[2][5];
-		for(int i=0;i<2;i++){
-			for(int j=0;j<5;j++){
-				cardsOnBoard[i][j]=new JPanel();
-				cardsOnBoard[i][j].setBounds(200+120*j,768/5+150*i,100,140);
-				cardsOnBoard[i][j].setBackground(Color.WHITE);
-				getContentPane().add(cardsOnBoard[i][j]);
-			}
-		}
-		for(int i=0;i<2;i++){
-			for(int j=0;j<5;j++){
-				oppCardsOnBoard[i][j] = new JPanel();
-				oppCardsOnBoard[i][j].setBounds(200+120*j,768/5+300+150*i,100,140);
-				oppCardsOnBoard[i][j].setBackground(Color.WHITE);
-				getContentPane().add(oppCardsOnBoard[i][j]);
-			}
-		}
+		this.boardGenerator();
+		myHand = new Hand(true,new ArrayList<Card>());
+		oppHand = new Hand(true,new ArrayList<Card>());
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLayout(new BorderLayout());
 		this.setBounds(0, 0, 1024, 768);
 		this.setVisible(true);
 		
-		hand.setBackground(Color.GRAY);
-		hand.setPreferredSize(new Dimension(1024, 768/5));
+		
 		board.setBackground(Color.LIGHT_GRAY);
-		opphand.setBackground(Color.GRAY);
-		opphand.setPreferredSize(new Dimension(1024, 768/5));
+		oppHand.setBackground(Color.GRAY);
+		oppHand.setPreferredSize(new Dimension(1024, 768/7+20));
 		
 		
-		this.add(opphand, BorderLayout.BEFORE_FIRST_LINE);
-		this.add(hand, BorderLayout.AFTER_LAST_LINE);
+		this.add(oppHand, BorderLayout.BEFORE_FIRST_LINE);
+		this.add(myHand, BorderLayout.AFTER_LAST_LINE);
 		this.add(board);
 		
+	}
+	private void boardGenerator(){
+		myCardsOnBoard = new Card[2][5];
+		oppCardsOnBoard = new Card[2][5];
+		for(int i=0;i<2;i++){
+			for(int j=0;j<5;j++){
+				myCardsOnBoard[i][j]=new Card();
+				myCardsOnBoard[i][j].setBounds(200+120*j,768/7+25+115*i,78,110);
+				myCardsOnBoard[i][j].setBackground(Color.WHITE);
+				getContentPane().add(myCardsOnBoard[i][j]);
+			}
+		}
+		for(int i=0;i<2;i++){
+			for(int j=0;j<5;j++){
+				oppCardsOnBoard[i][j] = new Card();
+				oppCardsOnBoard[i][j].setBounds(200+120*j,768/7+260+115*i,78,110);
+				oppCardsOnBoard[i][j].setBackground(Color.WHITE);
+				getContentPane().add(oppCardsOnBoard[i][j]);
+			}
+		}
 	}
 	
 }
