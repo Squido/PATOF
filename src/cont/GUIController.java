@@ -4,7 +4,7 @@ import GUI.GameWindow;
 import GUI.MainMenu;
 import GUI.OptionsWindow;
 
-public class GUIController {
+public class GUIController extends Thread {
 	GameWindow gameWindow;
 	MainMenu mainMenu;
 	OptionsWindow optionsWindow;
@@ -43,4 +43,5 @@ public class GUIController {
 		optionsWindow.setVisible(false);
 		optionsWindow = null;
 	}
+	//TODO run()
 }

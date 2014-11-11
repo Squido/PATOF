@@ -23,7 +23,11 @@ public class Activation {
 		}
 	}
 	public void activate() {
-		
+		try {
+			this.wait(); //for signal from GUI
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
