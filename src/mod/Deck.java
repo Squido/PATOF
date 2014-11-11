@@ -4,8 +4,10 @@ import java.util.*;
 
 public class Deck {
 	private List<Card> cards;
+	private Player owner;
 
-	public Deck(List<Card> cards) {
+	public Deck(List<Card> cards, Player owner) {
+		this.owner = owner;
 		this.cards = cards;
 		shuffle();
 	}
@@ -20,12 +22,23 @@ public class Deck {
 		}
 		cards = tmp;
 	}
-	
-	public Card draw(){
+
+	public Card draw() {
 		return cards.remove(0);
 	}
-	
-	public void addCard(Card card){
+
+	public List<Card> draw(int x) {
+		if (x > (7 - owner.getHand().getSize())) {
+			x = (7 - owner.getHand().getSize());
+		}
+		List<Card> tmp = new ArrayList<Card>();
+		for (int i = 0; i < x; i++) {
+			tmp.add(cards.remove(0));
+		}
+		return tmp;
+	}
+
+	public void addCard(Card card) {
 		cards.add(card);
 		shuffle();
 	}

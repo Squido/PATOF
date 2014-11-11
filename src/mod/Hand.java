@@ -20,4 +20,14 @@ public class Hand {
 	public void removeCard(int id){
 		cards.remove(id);
 	}
+
+	public void addCards(List<Card> list) {
+		for(Card i : list){
+			cards.add(i);
+		}
+	}
+	
+	public int getSize(){
+		return cards.size();
+	}
 }

@@ -3,7 +3,7 @@ package mod;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import cont.GUIController;
+import cont.GameController;
 import cont.Turn;
 
 public class Activation {
@@ -16,7 +16,7 @@ public class Activation {
 			e.printStackTrace();
 		}
 		try {
-			add.invoke(GUIController.getTurn(), this);
+			add.invoke(GameController.getTurn(), this);
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException e) {
 			e.printStackTrace();

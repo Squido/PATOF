@@ -4,14 +4,15 @@ public class Player {
 	private String name;
 	private Hand hand;
 	private Deck deck;
-	
-	public Player(String name, Hand hand, Deck deck){
-		this.setName(name);
-		this.setHand(hand);
-		this.setDeck(deck);
+
+	public Player(String name, Deck deck) {
+		this.name = name;
+		this.deck = deck;
+		hand = new Hand();
+		hand.addCards(deck.draw(7));
 	}
-	
-	public void draw(){
+
+	public void draw() {
 		hand.addCard(deck.draw());
 	}
 
@@ -19,23 +20,11 @@ public class Player {
 		return hand;
 	}
 
-	public void setHand(Hand hand) {
-		this.hand = hand;
-	}
-
 	public Deck getDeck() {
 		return deck;
 	}
 
-	public void setDeck(Deck deck) {
-		this.deck = deck;
-	}
-
 	public String getName() {
 		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 }
