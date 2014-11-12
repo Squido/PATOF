@@ -7,7 +7,7 @@ import javax.swing.*;
 import cont.GUIController;
 
 public class GameWindow extends JFrame {
-	GUIController controller;
+	private GUIController controller;
 	private JPanel board = new JPanel();
 	private Hand myHand;
 	private Hand oppHand;

@@ -5,10 +5,10 @@ import GUI.MainMenu;
 import GUI.OptionsWindow;
 
 public class GUIController extends Thread {
-	GameWindow gameWindow;
-	MainMenu mainMenu;
-	OptionsWindow optionsWindow;
-	GameController game;
+	private GameWindow gameWindow;
+	private MainMenu mainMenu;
+	private OptionsWindow optionsWindow;
+	private GameController game;
 	
 	public GUIController(){
 		showNewMainMenu();

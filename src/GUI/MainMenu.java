@@ -9,7 +9,7 @@ import cont.GUIController;
 
 
 public class MainMenu extends JFrame{
-	GUIController controller;
+	private GUIController controller;
 	public MainMenu(GUIController gui){
 		controller=gui;
 		this.setTitle("PATOF - Menu");

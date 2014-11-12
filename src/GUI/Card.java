@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 public class Card extends JPanel {
-	Image image;
+	private Image image;
 	public Card(){
 		super();
 		try{
@@ -20,6 +20,13 @@ public class Card extends JPanel {
 	}
 	public void addCard(mod.Card card){
 		//image=card.getImage();
+	}
+	public Image takeCard(){
+		Image tmp = image;
+		try{
+			image = ImageIO.read(new File("graphics/reverse.jpg"));
+		}catch(Exception e){}
+		return tmp;
 	}
 	
 	@Override
