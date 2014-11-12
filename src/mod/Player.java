@@ -5,13 +5,18 @@ public class Player {
 	private Hand hand;
 	private Deck deck;
 
-	public Player(String name, Deck deck) {
+	public Player(String name) {
 		this.name = name;
+	}
+
+	public void addDeck(Deck deck) {
 		this.deck = deck;
+	}
+	
+	public void drawStartingHand(){
 		hand = new Hand();
 		hand.addCards(deck.draw(7));
 	}
-
 	public void draw() {
 		hand.addCard(deck.draw());
 	}

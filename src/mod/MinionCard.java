@@ -12,6 +12,7 @@ public class MinionCard extends Card {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		in.nextLine();
 		for (int i = 0; i < id; i++) {
 			in.nextLine();
 		}

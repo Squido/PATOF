@@ -8,7 +8,15 @@ public class Deck {
 
 	public Deck(List<Card> cards, Player owner) {
 		this.owner = owner;
+		owner.addDeck(this);
 		this.cards = cards;
+		shuffle();
+	}
+	
+	public Deck(Player owner) {
+		this.owner = owner;
+		owner.addDeck(this);
+		cards = new ArrayList<Card>();
 		shuffle();
 	}
 
