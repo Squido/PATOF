@@ -3,7 +3,7 @@ package mod;
 public class Board {
 	private Card cards[][];
 
-	Board() {
+	public Board() {
 		cards = new Card[4][5];
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 5; j++) {
@@ -13,6 +13,7 @@ public class Board {
 	}
 
 	public void addCard(int x, int y, Card card) {
+		System.out.print("1");
 		cards[x][y] = card;
 	}
 

@@ -19,6 +19,7 @@ public class GameController {
 	private Card card;
 
 	public GameController() {
+		board = new Board();
 		turnCounter = 0;
 		b_activations = new LinkedList<Activation>();
 		e_activations = new LinkedList<Activation>();
