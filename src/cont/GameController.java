@@ -47,7 +47,7 @@ public class GameController {
 		players[1].draw();
 	}
 
-	public void Turn() {
+	public void beginTurn() {
 		turnCounter++;
 		// beginning of turn activations
 		for (Activation i : b_activations) {
@@ -56,19 +56,22 @@ public class GameController {
 
 		// draw
 		bothDraw();
+		GUIController.setPlacementFlag(true);
+	}
 
-		// placement
-		int first = 0;
-		if (players[0].handSize() < players[1].handSize()) {
-			first = 1;
+	// placement
+	public void addCardToBoard(int x, int y, Card card) {
+		board.addCard(x, y, card);
+	}
+
+	// fight
+	public void attack(int x_att, int y_att, int x_def, int y_def) {
+		if(board.getCard(x_att, y_att).attack(board.getCard(x_def, y_def))){
+			board.removeCard(x_def, y_def);
 		}
-		while (players[0].isPlacing() || players[1].isPlacing()) {
-			GUIController.placeFromHandOnBoard(first);
-			first = first == 0 ? 1 : 0; // teraz zamiana na drugiego
-		}
+	}
 
-		// fight
-
+	public void endTurn() {
 		// end turn activations
 		for (Activation i : e_activations) {
 			i.activate();
@@ -86,20 +89,16 @@ public class GameController {
 	public Card removeCardFromHand(int player, int card) {
 		return players[player].getHand().removeCard(card);
 	}
-	
-	public void addCardToHand(int player, Card card){
+
+	public void addCardToHand(int player, Card card) {
 		players[player].getHand().addCard(card);
 	}
 
-	public void addCardToBoard(int x, int y, Card card) {
-		board.addCard(x, y, card);
-	}
-	
-	public Hand getHand(int player){
+	public Hand getHand(int player) {
 		return players[player].getHand();
 	}
-	
-	public List<String> getImages (int player){
+
+	public List<String> getImages(int player) {
 		return players[player].getHand().getCardImages();
 	}
 

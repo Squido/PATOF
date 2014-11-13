@@ -11,6 +11,7 @@ public class GUIController {
 	private MainMenu mainMenu;
 	private OptionsWindow optionsWindow;
 	private GameController game;
+	private static boolean placementFlag;
 	
 	public GUIController(){
 		showNewMainMenu();
@@ -45,14 +46,16 @@ public class GUIController {
 		optionsWindow.setVisible(false);
 		optionsWindow = null;
 	}
-
-	public static void placeFromHandOnBoard(int playerId) {
-		// TODO Auto-generated method stub		
-	}
 	public List<String> getCardsImage(int player){
 		return game.getImages(player);
 	}
 	public GameController getGameController(){
 		return game;
+	}
+	public boolean isPlacementFlag() {
+		return placementFlag;
+	}
+	public static void setPlacementFlag(boolean f) {
+		placementFlag = f;
 	}
 }
