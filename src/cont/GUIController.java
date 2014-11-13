@@ -46,7 +46,7 @@ public class GUIController {
 		optionsWindow = null;
 	}
 
-	public static void place(int playerId) {
+	public static void placeFromHandOnBoard(int playerId) {
 		// TODO Auto-generated method stub		
 	}
 	public List<String> getCardsImage(int player){
