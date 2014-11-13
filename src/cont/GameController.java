@@ -62,7 +62,7 @@ public class GameController {
 			first = 1;
 		}
 		while (players[0].isPlacing() || players[1].isPlacing()) {
-			GUIController.place(first);
+			GUIController.placeFromHandOnBoard(first);
 			first = first == 0 ? 1 : 0; // teraz zamiana na drugiego
 		}
 
