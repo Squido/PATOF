@@ -13,7 +13,6 @@ public class Board {
 	}
 
 	public void addCard(int x, int y, Card card) {
-		System.out.print("1");
 		cards[x][y] = card;
 	}
 
