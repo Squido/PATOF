@@ -98,7 +98,7 @@ public class GameController {
 		return players[player].getHand();
 	}
 	
-	public List<String> List (int player){
+	public List<String> getImages (int player){
 		return players[player].getHand().getCardImages();
 	}
 
