@@ -62,6 +62,7 @@ public class Card extends JPanel {
 			@Override
 			public void mousePressed(MouseEvent e){
 				Card card = (Card)e.getSource();
+				card.gameWindow.pane.moveToFront(card);
 				oldX=card.getX();
 				oldY=card.getY();
 				x=card.getLocationOnScreen().x;

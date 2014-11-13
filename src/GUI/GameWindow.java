@@ -2,11 +2,15 @@ package GUI;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
 import cont.GUIController;
 
 public class GameWindow extends JFrame {
+	//private JLayeredPane pane;
+	public JLayeredPane pane;
 	private GUIController controller;
 	Field myCardsOnBoard[][];
 	Field oppCardsOnBoard[][];
@@ -17,6 +21,7 @@ public class GameWindow extends JFrame {
 
 	
 	public GameWindow(GUIController gui){
+		pane = getLayeredPane();
 		setResizable(false);
 		controller = gui;
 		this.boardGenerator();
@@ -28,9 +33,13 @@ public class GameWindow extends JFrame {
 		this.setVisible(true);
 		
 		setBackground(Color.LIGHT_GRAY);
+		addCard(new Card(this));
+		Image image;
+		try{
+			image = ImageIO.read(new File("graphics/card.jpg"));
+			addCard(new Card(this,image));
+		}catch(Exception e){}
 		
-		addCard(new Card(this));
-		addCard(new Card(this));
 		addCard(new Card(this));
 		addCard(new Card(this));
 		addCard(new Card(this));
@@ -85,11 +94,11 @@ public class GameWindow extends JFrame {
 	}
 	private void generateHand(){
 		for(int i=0;i<myHandCard.size();i++){
-			this.remove(myHandCard.get(i));
+			pane.remove(myHandCard.get(i));
 		}
 		for(int i=0;i<myHandCard.size();i++){
 			myHandCard.get(i).setBounds(380-((myHandCard.size()-1)*40)+80*i,615+10,78,110);
-			this.add(myHandCard.get(i));
+			pane.add(myHandCard.get(i));
 		}
 	}
 	public void addCard(Card card){
@@ -101,7 +110,7 @@ public class GameWindow extends JFrame {
 	
 	public Card getCard(int index){
 		Card card = myHandCard.get(index).getCard();
-		this.remove(myHandCard.get(index));
+		getLayeredPane().remove(myHandCard.get(index));
 		myHandCard.remove(index);
 		generateHand();
 		repaint();
@@ -120,7 +129,7 @@ public class GameWindow extends JFrame {
 					card.setBounds(myCardsOnBoard[i][j].getX(),myCardsOnBoard[i][j].getY(),78,110);
 					if(card.isInHand()){
 						getCard(myHandCard.indexOf(card));
-						getContentPane().add(card);
+						getLayeredPane().add(card);
 						card.setInHand(false);
 					}
 					return true;
