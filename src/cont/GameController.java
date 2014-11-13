@@ -1,13 +1,16 @@
 package cont;
 
-import mod.Card;
-import mod.Deck;
-import mod.MinionCard;
-import mod.Player;
+import java.util.LinkedList;
+import java.util.List;
+
+import mod.*;
 
 public class GameController {
-	private static Turn turn;
 	private static Player[] players;
+	private static Board board;
+	private static int turnCounter;
+	private static List<Activation> b_activations;
+	private static List<Activation> e_activations;
 
 	// do testow tylko
 	private Deck deck0;
@@ -15,12 +18,15 @@ public class GameController {
 	private Card card;
 
 	public GameController() {
-		turn = new Turn();
+		turnCounter = 0;
+		b_activations = new LinkedList<Activation>();
+		e_activations = new LinkedList<Activation>();
+
 		// test
 		players = new Player[2];
 		players[0] = new Player("Squid");
 		players[1] = new Player("Kyuub");
-		
+
 		deck0 = new Deck(players[0]);
 		deck1 = new Deck(players[1]);
 		card = new MinionCard(0);
@@ -28,18 +34,71 @@ public class GameController {
 			deck0.addCard(card);
 			deck1.addCard(card);
 		}
-		//koniec testu
+		// koniec testu
 		players[0].drawStartingHand();
 		players[1].drawStartingHand();
-		turn.start();
 
 	}
 
-	public static Turn getTurn() {
-		return turn;
+	public void addCardToBoard(int x, int y, Card card) {
+		board.addCard(x, y, card);
+	}
+
+	public Card removeCardFromBoard(int x, int y) {
+		return board.removeCard(x, y);
 	}
 
 	public static Player getPlayer(int i) {
 		return players[i];
+	}
+
+	public static void bothDraw() {
+		players[0].draw();
+		players[1].draw();
+	}
+
+	public void Turn() {
+		turnCounter++;
+		// beginning of turn activations
+		for (Activation i : b_activations) {
+			i.activate();
+		}
+
+		// draw
+		bothDraw();
+
+		// placement
+		int first = 0;
+		if (players[0].handSize() < players[1].handSize()) {
+			first = 1;
+		}
+		while (players[0].isPlacing() || players[1].isPlacing()) {
+			GUIController.place(first);
+			first = first == 0 ? 1 : 0; // teraz zamiana na drugiego
+		}
+
+		// fight
+
+		// end turn activations
+		for (Activation i : e_activations) {
+			i.activate();
+		}
+	}
+
+	public static int getTurnNo() {
+		return turnCounter;
+	}
+
+	public static void addB(Activation a) {
+		b_activations.add(a);
+	}
+
+	public static void addE(Activation a) {
+		e_activations.add(a);
+	}
+
+	public static void removeActivation(Activation a) {
+		b_activations.remove(a);
+		e_activations.remove(a);
 	}
 }

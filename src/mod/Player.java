@@ -32,4 +32,13 @@ public class Player {
 	public String getName() {
 		return name;
 	}
+
+	public int handSize() {
+		return hand.getSize();
+		
+	}
+
+	public boolean isPlacing() {
+		return false;
+	}
 }
