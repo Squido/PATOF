@@ -148,7 +148,6 @@ public class GameWindow extends JFrame {
 	private void setStartingHand() {
 		List<String> images = controller.getGameController().getImages(0);
 		for (String img : images) {
-			System.out.println(img);
 			handCard.get(0).add(new Card(this, img));
 		}
 		images = controller.getGameController().getImages(1);
