@@ -13,12 +13,13 @@ public class Hand {
 		cards.add(card);
 	}
 	
-	public void removeCard(Card card){
+	public Card removeCard(Card card){
 		cards.remove(card);
+		return card;
 	}
 	
-	public void removeCard(int id){
-		cards.remove(id);
+	public Card removeCard(int id){
+		return cards.remove(id);
 	}
 
 	public void addCards(List<Card> list) {

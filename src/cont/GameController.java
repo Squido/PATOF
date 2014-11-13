@@ -82,8 +82,8 @@ public class GameController {
 		players[player].draw();
 	}
 
-	public void removeCardFromHand(int player, int card) {
-		players[player].getHand().removeCard(card);
+	public Card removeCardFromHand(int player, int card) {
+		return players[player].getHand().removeCard(card);
 	}
 	
 	public void addCardToHand(int player, Card card){
