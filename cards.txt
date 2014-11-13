@@ -1,2 +1,3 @@
 name, att, def, hp, cost, magic, dist, img, skille
 patof 1 1 1 1 f f graphics/border.jpg
+Squid 10 10 50 0 f f graphics/card.jpg

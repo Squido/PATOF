@@ -29,6 +29,7 @@ public class MinionCard extends Card {
 		setDef(line[i] - 48);
 		i += 2;
 		setHp(line[i] - 48);
+		this.maxHp = hp;
 		i += 2;
 		setCost(line[i] - 48);
 		i += 2;
@@ -79,6 +80,14 @@ public class MinionCard extends Card {
 		this.setHp(this.getHp() - dmg);
 		if (counter && hp > 0 && !attacker.isDist()) {
 			attacker.setHp(attacker.getHp() - (att - attacker.getDef()));
+		}
+	}
+
+	public void heal(int amount) {
+		if (hp + amount > maxHp) {
+			hp = maxHp;
+		} else {
+			hp += amount;
 		}
 	}
 }

@@ -4,7 +4,7 @@ import java.util.*;
 
 public abstract class Card {
 	protected String name, imagePath;
-	protected int att, hp, def, cost;
+	protected int att, hp, def, cost, maxHp;
 	protected boolean magic, dist, counter;
 	protected List<Skill> skillz = new ArrayList<Skill>();
 
@@ -21,6 +21,10 @@ public abstract class Card {
 
 	public int getHp() {
 		return hp;
+	}
+	
+	public int getMaxHp() {
+		return maxHp;
 	}
 
 	public void setHp(int hp) {

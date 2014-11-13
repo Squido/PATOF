@@ -4,9 +4,11 @@ public class Player {
 	private String name;
 	private Hand hand;
 	private Deck deck;
+	private Card hero;
 
 	public Player(String name) {
 		this.name = name;
+		this.hero = new MinionCard(1);
 	}
 
 	public void addDeck(Deck deck) {
@@ -40,5 +42,13 @@ public class Player {
 
 	public boolean isPlacing() {
 		return false;
+	}
+
+	public Card getHero() {
+		return hero;
+	}
+
+	public void setHero(Card hero) {
+		this.hero = hero;
 	}
 }

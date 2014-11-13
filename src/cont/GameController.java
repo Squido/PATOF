@@ -63,6 +63,10 @@ public class GameController {
 	public void addCardToBoard(int x, int y, Card card) {
 		board.addCard(x, y, card);
 	}
+	
+	public boolean isPlaceable(Card card, int owner){
+		return players[owner].getHero().getMaxHp() - players[owner].getHero().getHp() > card.getCost();
+	}
 
 	// fight
 	public void attack(int x_att, int y_att, int x_def, int y_def) {
