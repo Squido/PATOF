@@ -21,4 +21,8 @@ public class Board {
 		cards[x][y] = null;
 		return card;
 	}
+	
+	public Card getCard(int x, int y){
+		return cards[x][y];
+	}
 }

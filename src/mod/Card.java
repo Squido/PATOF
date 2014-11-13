@@ -76,4 +76,11 @@ public abstract class Card {
 	public String getImgPath(){
 		return imagePath;
 	}
+
+	public boolean attack(Card card) {
+		return false;		
+	}
+	public boolean defend(Card card) {
+		return false;		
+	}
 }

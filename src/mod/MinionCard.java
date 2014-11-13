@@ -1,4 +1,5 @@
 package mod;
+
 import java.io.*;
 import java.util.*;
 
@@ -60,5 +61,15 @@ public class MinionCard extends Card {
 			i++;
 		}
 		setCounter(false);
+	}
+
+	@Override
+	public boolean attack(Card defender) {
+		return defender.defend(this);
+	}
+
+	@Override
+	public boolean defend(Card attacker) {
+		return attacker.getAtt() > this.getHp();
 	}
 }
