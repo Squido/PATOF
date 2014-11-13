@@ -77,10 +77,8 @@ public abstract class Card {
 		return imagePath;
 	}
 
-	public boolean attack(Card card) {
-		return false;		
+	public void attack(Card card) {
 	}
-	public boolean defend(Card card) {
-		return false;		
+	public void defend(Card card) {
 	}
 }

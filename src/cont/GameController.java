@@ -66,7 +66,11 @@ public class GameController {
 
 	// fight
 	public void attack(int x_att, int y_att, int x_def, int y_def) {
-		if(board.getCard(x_att, y_att).attack(board.getCard(x_def, y_def))){
+		board.getCard(x_att, y_att).attack(board.getCard(x_def, y_def));
+		if (board.getCard(x_att, y_att).getHp() == 0) {
+			board.removeCard(x_att, y_att);
+		}
+		if (board.getCard(x_def, y_def).getHp() == 0) {
 			board.removeCard(x_def, y_def);
 		}
 	}

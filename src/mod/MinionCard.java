@@ -64,12 +64,21 @@ public class MinionCard extends Card {
 	}
 
 	@Override
-	public boolean attack(Card defender) {
-		return defender.defend(this);
+	public void attack(Card defender) {
+		// apply other attack effects
+		defender.defend(this);
 	}
 
 	@Override
-	public boolean defend(Card attacker) {
-		return attacker.getAtt() > this.getHp();
+	public void defend(Card attacker) {
+		// apply other defense effects
+		int dmg = attacker.getAtt();
+		if (!attacker.isMagic()) {
+			dmg = -this.getDef();
+		}
+		this.setHp(this.getHp() - dmg);
+		if (counter && hp > 0 && !attacker.isDist()) {
+			attacker.setHp(attacker.getHp() - (att - attacker.getDef()));
+		}
 	}
 }
