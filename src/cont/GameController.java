@@ -1,5 +1,6 @@
 package cont;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,19 +41,7 @@ public class GameController {
 
 	}
 
-	public void addCardToBoard(int x, int y, Card card) {
-		board.addCard(x, y, card);
-	}
-
-	public Card removeCardFromBoard(int x, int y) {
-		return board.removeCard(x, y);
-	}
-
-	public static Player getPlayer(int i) {
-		return players[i];
-	}
-
-	public static void bothDraw() {
+	private static void bothDraw() {
 		players[0].draw();
 		players[1].draw();
 	}
@@ -87,6 +76,34 @@ public class GameController {
 
 	public static int getTurnNo() {
 		return turnCounter;
+	}
+
+	public void draw(int player) {
+		players[player].draw();
+	}
+
+	public void removeCardFromHand(int player, int card) {
+		players[player].getHand().removeCard(card);
+	}
+	
+	public void addCardToHand(int player, Card card){
+		players[player].getHand().addCard(card);
+	}
+
+	public void addCardToBoard(int x, int y, Card card) {
+		board.addCard(x, y, card);
+	}
+	
+	public Hand getHand(int player){
+		return players[player].getHand();
+	}
+	
+	public List<String> List (int player){
+		return players[player].getHand().getCardImages();
+	}
+
+	public Card removeCardFromBoard(int x, int y) {
+		return board.removeCard(x, y);
 	}
 
 	public static void addB(Activation a) {

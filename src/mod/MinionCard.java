@@ -35,6 +35,10 @@ public class MinionCard extends Card {
 		i += 2;
 		setDist(line[i] == 't');
 		i += 2;
+		while (!Character.isWhitespace(line[i])) {
+			imagePath = imagePath + line[i];
+			i++;
+		}
 		tmp = "";
 		while (line[i] != ' ' && line[i] != '\n') {
 			tmp = tmp + line[i];

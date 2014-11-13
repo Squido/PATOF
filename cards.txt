@@ -1,2 +1,2 @@
 name, att, def, hp, cost, magic, dist, img, skille
-patof 1 1 1 1 f f border.jpg
+patof 1 1 1 1 f f graphics/border.jpg

@@ -3,7 +3,7 @@ package mod;
 import java.util.*;
 
 public abstract class Card {
-	protected String name;
+	protected String name, imagePath;
 	protected int att, hp, def, cost;
 	protected boolean magic, dist, counter;
 	protected List<Skill> skillz = new ArrayList<Skill>();
@@ -71,5 +71,9 @@ public abstract class Card {
 
 	public void setCounter(boolean counter) {
 		this.counter = counter;
+	}
+	
+	public String getImgPath(){
+		return imagePath;
 	}
 }

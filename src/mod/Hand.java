@@ -30,4 +30,12 @@ public class Hand {
 	public int getSize(){
 		return cards.size();
 	}
+
+	public List<String> getCardImages() {
+		List<String> images = new ArrayList<String>();
+		for(Card i : cards){
+			images.add(i.getImgPath());
+		}
+		return images;
+	}
 }
