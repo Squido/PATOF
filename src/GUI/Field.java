@@ -22,7 +22,7 @@ public class Field extends JPanel {
 	}
 	public void putCard(Card cd){
 		card=cd;
-		this.setVisible(false);
+		//this.setVisible(false);
 		card.setField(this);
 //		image=card.getImage();
 	}
@@ -30,7 +30,7 @@ public class Field extends JPanel {
 		Card c=card;
 		card.setField(null);
 		card=null;
-		this.setVisible(true);
+		//this.setVisible(true);
 		return c;
 	}
 	public boolean isEmpty(){

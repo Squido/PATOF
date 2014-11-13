@@ -1,5 +1,7 @@
 package cont;
 
+import java.util.List;
+
 import GUI.GameWindow;
 import GUI.MainMenu;
 import GUI.OptionsWindow;
@@ -26,9 +28,9 @@ public class GUIController {
 	}
 	
 	public void showNewGameWindow(){
+		game = new GameController();
 		gameWindow = new GameWindow(this);
 		gameWindow.setVisible(true);
-		game = new GameController();
 		
 	}
 	public void closeGameWindow(){
@@ -46,5 +48,11 @@ public class GUIController {
 
 	public static void place(int playerId) {
 		// TODO Auto-generated method stub		
+	}
+	public List<String> getCardsImage(int player){
+		return game.getImages(player);
+	}
+	public GameController getGameController(){
+		return game;
 	}
 }
