@@ -24,21 +24,25 @@ public class MinionCard extends Card {
 			name = name + line[i];
 			i++;
 		}
-		setAtt(line[i] - 48);
-		i += 2;
-		setDef(line[i] - 48);
-		i += 2;
-		setHp(line[i] - 48);
+		int j = gettingValue(i, line);
+		setAtt(j);
+		i += String.valueOf(j).length() + 1;
+		j = gettingValue(i, line);
+		setDef(j);
+		i += String.valueOf(j).length() + 1;
+		j = gettingValue(i, line);
+		setHp(j);
 		this.maxHp = hp;
-		i += 2;
-		setCost(line[i] - 48);
+		i += String.valueOf(j).length() + 1;
+		j = gettingValue(i, line);
+		setCost(j); 
 		i += 2;
 		setMagic(line[i] == 't');
 		i += 2;
 		setDist(line[i] == 't');
 		i += 2;
 		imagePath = "";
-		while (!Character.isWhitespace(line[i])) {
+		while (line[i] != ' ' && line[i] != '\n') {
 			imagePath = imagePath + line[i];
 			i++;
 		}
@@ -50,12 +54,12 @@ public class MinionCard extends Card {
 		if (line[i - 1] == '\n') {
 			i--;
 		}
-		int j = 0;
+		j = 0;
 		while (line[i] != '\n') {
-			j = line[i] - 48;
+			j = line[i] - '0';
 			i++;
 			if (line[i] != ' ') {
-				j = j * 10 + (line[i] - 48);
+				j = j * 10 + (line[i] - '0');
 			}
 			skillz.add(SkillFactory.getSkill(i));
 			j = 0;
@@ -75,7 +79,7 @@ public class MinionCard extends Card {
 		// apply other defense effects
 		int dmg = attacker.getAtt();
 		if (!attacker.isMagic()) {
-			dmg = -this.getDef();
+			dmg -= this.getDef();
 		}
 		this.setHp(this.getHp() - dmg);
 		if (counter && hp > 0 && !attacker.isDist()) {
@@ -89,5 +93,14 @@ public class MinionCard extends Card {
 		} else {
 			hp += amount;
 		}
+	}
+
+	private int gettingValue(int i, char[] line) {
+		int j = 0;
+		while (line[i] != ' ') {
+			j = j * 10 + (line[i] - '0');
+			i++;
+		}
+		return j;
 	}
 }
