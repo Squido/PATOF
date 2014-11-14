@@ -97,4 +97,16 @@ public class GUIController {
 	public void changeActivePlayer() {
 		game.changeActivePlayer();
 	}
+
+	public void removeCardFromBoard(int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void killCardFromBoard(int x, int y) {
+		// przesun¹æ na graveyard
+		removeCardFromBoard(x, y);
+		// TODO Auto-generated method stub
+		
+	}
 }

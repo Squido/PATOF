@@ -7,11 +7,11 @@ import java.util.List;
 import mod.*;
 
 public class GameController {
-	private static Player[] players;
-	private static Board board;
-	private static int turnCounter;
-	private static List<Activation> b_activations;
-	private static List<Activation> e_activations;
+	private Player[] players;
+	private Board board;
+	private int turnCounter;
+	private List<Activation> b_activations;
+	private List<Activation> e_activations;
 	private GUIController gui;
 	private int activePlayer;
 	// do testow tylko
@@ -44,7 +44,7 @@ public class GameController {
 
 	}
 
-	private static void bothDraw() {
+	private void bothDraw() {
 		players[0].draw();
 		players[1].draw();
 	}
@@ -74,11 +74,13 @@ public class GameController {
 	// fight
 	public void attack(int x_att, int y_att, int x_def, int y_def) {
 		board.getCard(x_att, y_att).attack(board.getCard(x_def, y_def));
-		if (board.getCard(x_att, y_att).getHp() == 0) {
+		if (board.getCard(x_att, y_att).getHp() <= 0) {
 			board.removeCard(x_att, y_att);
+			gui.killCardFromBoard(x_att, y_att);
 		}
-		if (board.getCard(x_def, y_def).getHp() == 0) {
+		if (board.getCard(x_def, y_def).getHp() <= 0) {
 			board.removeCard(x_def, y_def);
+			gui.killCardFromBoard(x_def, y_def);
 		}
 	}
 
@@ -89,7 +91,7 @@ public class GameController {
 		}
 	}
 
-	public static int getTurnNo() {
+	public int getTurnNo() {
 		return turnCounter;
 	}
 
@@ -117,15 +119,15 @@ public class GameController {
 		return board.removeCard(x, y);
 	}
 
-	public static void addB(Activation a) {
+	public void addB(Activation a) {
 		b_activations.add(a);
 	}
 
-	public static void addE(Activation a) {
+	public void addE(Activation a) {
 		e_activations.add(a);
 	}
 
-	public static void removeActivation(Activation a) {
+	public void removeActivation(Activation a) {
 		b_activations.remove(a);
 		e_activations.remove(a);
 	}

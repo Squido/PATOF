@@ -4,7 +4,7 @@ import java.util.*;
 
 public abstract class Card {
 	protected String name, imagePath;
-	protected int att, hp, def, cost, maxHp;
+	protected int att, hp, def, cost, maxHp, init;
 	protected boolean magic, dist, counter;
 	protected List<Skill> skillz = new ArrayList<Skill>();
 
@@ -51,6 +51,17 @@ public abstract class Card {
 
 	public void setCost(int cost) {
 		this.cost = cost;
+	}
+	
+	public int getInit() {
+		if (init < 0) {
+			return 0;
+		}
+		return init;
+	}
+
+	public void setInit(int init) {
+		this.init = init;
 	}
 
 	public boolean isMagic() {
