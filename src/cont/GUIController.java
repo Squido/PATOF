@@ -11,7 +11,8 @@ public class GUIController {
 	private MainMenu mainMenu;
 	private OptionsWindow optionsWindow;
 	private GameController game;
-	private static boolean placementFlag;
+	private boolean placementFlag;
+	private boolean aimingFlag;
 	
 	public GUIController(){
 		showNewMainMenu();
@@ -29,7 +30,7 @@ public class GUIController {
 	}
 	
 	public void showNewGameWindow(){
-		game = new GameController();
+		game = new GameController(this);
 		gameWindow = new GameWindow(this);
 		gameWindow.setVisible(true);
 		
@@ -55,7 +56,13 @@ public class GUIController {
 	public boolean isPlacementFlag() {
 		return placementFlag;
 	}
-	public static void setPlacementFlag(boolean f) {
+	public void setPlacementFlag(boolean f) {
 		placementFlag = f;
+	}
+	public boolean isAimingFlag() {
+		return aimingFlag;
+	}
+	public void setAimingFlag(boolean f) {
+		aimingFlag = f;
 	}
 }

@@ -10,30 +10,37 @@ import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 
 import javax.imageio.ImageIO;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JList;
 import javax.swing.JPanel;
 
 public class Card extends JPanel {
 	private Image reverseImage;
 	private Image image;
+	private Image bigImage;
+	private Image displayImage;
 	private GameWindow gameWindow;
 	private boolean inHand;
 	private Field field;
 	private boolean reversed;
 	private boolean isActivePlayerCard;
 	private boolean haveListeners;
-	private MouseMotionAdapter MMA;
-	private MouseAdapter MA;
+	private MouseMotionAdapter MMAdrag;
+	private MouseAdapter MAdrag;
+	private MouseAdapter MAaim;
 	public Card(GameWindow gw){
 		super();
 		gameWindow=gw;
 		isActivePlayerCard=true;
 		try{
 			reverseImage = ImageIO.read(new File("graphics/reverse.jpg"));
+			displayImage = reverseImage;
 		}catch(Exception e){}
 		
 		reversed = true;
 		this.setPreferredSize(new Dimension(78, 110));
+		generateListeners();
 		addListeners();
 		repaint();
 		inHand=true;
@@ -45,6 +52,7 @@ public class Card extends JPanel {
 		
 		try{
 		image = ImageIO.read(new File(img));
+		displayImage = image;
 		}catch(Exception e){}
 		try{
 			reverseImage = ImageIO.read(new File("graphics/reverse.jpg"));
@@ -52,6 +60,7 @@ public class Card extends JPanel {
 		
 		reversed = false;
 		this.setPreferredSize(new Dimension(78, 110));
+		generateListeners();
 		addListeners();
 		repaint();
 		inHand=true;
@@ -64,12 +73,8 @@ public class Card extends JPanel {
 	public Card getCard(){
 		return this;
 	}
-	
-	
-	public void addListeners(){
-		haveListeners=true;
-		if(MMA==null)
-		MMA=new MouseMotionAdapter(){
+	private void generateListeners(){
+		MMAdrag=new MouseMotionAdapter(){
 			@Override
 			public void mouseDragged(MouseEvent e){
 				Card card = (Card)e.getSource();
@@ -77,9 +82,7 @@ public class Card extends JPanel {
                 repaint();
 			}
 		};
-		addMouseMotionListener(MMA);
-		if(MA==null)
-		MA = new MouseAdapter(){
+		MAdrag = new MouseAdapter(){
 			private int oldX,oldY,x,y;
 			@Override
 			public void mousePressed(MouseEvent e){
@@ -98,24 +101,56 @@ public class Card extends JPanel {
 				}
 					
 			}
+			@Override
+			public void mouseClicked(MouseEvent e){
+				Card card = (Card)e.getSource();
+				BigCardDisplayer big = new BigCardDisplayer(card.image,gameWindow);
+			}
 		};
-		addMouseListener(MA);
+		MAaim = new MouseAdapter(){
+			@Override
+			public void mouseClicked(MouseEvent e){
+				System.out.print("clicked");
+				Card card = (Card)e.getSource();
+				//zamiast tego mam od karty pobrac liste mozliwosci
+				DefaultListModel<String> dLM = new DefaultListModel<String>();
+				dLM.addElement("attack");
+				dLM.addElement("skill1");
+				dLM.addElement("skill2");
+				dLM.addElement("defend");
+				//
+				SkillListDisplayer sLD = new SkillListDisplayer(card,dLM);
+				gameWindow.getPane().add(sLD);
+				sLD.setListBounds(card.getX()+39,card.getY()+ 55, 161, 18*dLM.size());
+				JList list=sLD.getList();
+				card.gameWindow.getPane().add(list);
+				card.gameWindow.getPane().moveToFront(list);
+				card.gameWindow.getPane().repaint();
+			}
+		};
+	}
+	
+	public void addListeners(){
+		haveListeners=true;
+		
+		addMouseMotionListener(MMAdrag);
+		addMouseListener(MAdrag);
 	}
 	public void removeListeners(){
 		if(haveListeners){
-			removeMouseMotionListener(MMA);
-			removeMouseListener(MA);
+			removeMouseMotionListener(MMAdrag);
+			removeMouseListener(MAdrag);
 			haveListeners=false;
 		}
 	}
 	public void changeListeners(){
 		if(haveListeners){
-			removeMouseMotionListener(MMA);
-			removeMouseListener(MA);
+			removeMouseMotionListener(MMAdrag);
+			removeMouseListener(MAdrag);
 			haveListeners=false;
 		}else{
-			addMouseListener(MA);
-			addMouseMotionListener(MMA);
+			addMouseListener(MAdrag);
+			addMouseMotionListener(MMAdrag);
 			haveListeners=true;
 		}
 	}
@@ -140,18 +175,26 @@ public class Card extends JPanel {
 	}
 	public void reverse(){
 		reversed=!reversed;
+		if(reversed)displayImage=reverseImage;
+		else displayImage=image;
 		repaint();
 	}
 	@Override
 	protected void paintComponent(Graphics g){
 		super.paintComponent(g);
-		if(reversed) g.drawImage(reverseImage,0,0,null);
-		else g.drawImage(image,0,0,null);
+		if(displayImage!=null)g.drawImage(displayImage,0,0,null);
 	}
 	
 	public void changeActivePlayer(){
 		isActivePlayerCard=!isActivePlayerCard;
 		reverse();
 		removeListeners();
+	}
+	public void addAimListener(){
+		removeListeners();
+		addMouseListener(MAaim);
+	}
+	public GameWindow getGameWindow(){
+		return gameWindow;
 	}
 }

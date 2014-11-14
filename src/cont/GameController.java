@@ -12,13 +12,14 @@ public class GameController {
 	private static int turnCounter;
 	private static List<Activation> b_activations;
 	private static List<Activation> e_activations;
-
+	private GUIController gui;
 	// do testow tylko
 	private Deck deck0;
 	private Deck deck1;
 	private Card card;
 
-	public GameController() {
+	public GameController(GUIController controller) {
+		gui=controller;
 		board = new Board();
 		turnCounter = 0;
 		b_activations = new LinkedList<Activation>();
@@ -56,7 +57,7 @@ public class GameController {
 
 		// draw
 		bothDraw();
-		GUIController.setPlacementFlag(true);
+		gui.setPlacementFlag(true);
 	}
 
 	// placement

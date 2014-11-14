@@ -21,6 +21,7 @@ public class GameWindow extends JFrame {
 	private JButton graveyards[];
 	private JButton endTurn;
 	private int activePlayer;
+	private boolean endedTurn[];
 
 	public GameWindow(GUIController gui) {
 		activePlayer = 0;
@@ -31,6 +32,7 @@ public class GameWindow extends JFrame {
 		handCard.add(new ArrayList<Card>());
 		graveyards = new JButton[2];
 		decks = new JButton[2];
+		endedTurn = new boolean[2];
 
 		this.boardGenerator();
 		setStartingHand();
@@ -44,6 +46,23 @@ public class GameWindow extends JFrame {
 		endTurn = new JButton("endTurn");
 		endTurn.setBounds(900, 300, 100, 50);
 		add(endTurn);
+		endTurn.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				endedTurn[activePlayer]=true;
+				if(endedTurn[0]&&endedTurn[1]){
+					controller.setPlacementFlag(false);
+					controller.setAimingFlag(true);
+					endedTurn[0]=false;
+					endedTurn[1]=false;
+					for(Field f[] : CardsOnBoard) 
+						for(Field field : f) 
+							if(field.getCard()!=null)field.getCard().addAimListener();
+				}
+				changeActivePlayer();
+			}
+			
+		});
 	}
 
 	private void boardGenerator() {
@@ -146,6 +165,8 @@ public class GameWindow extends JFrame {
 	}
 
 	private void setStartingHand() {
+		endedTurn[0]=false;
+		endedTurn[1]=false;
 		List<String> images = controller.getGameController().getImages(0);
 		for (String img : images) {
 			handCard.get(0).add(new Card(this, img));
@@ -163,6 +184,7 @@ public class GameWindow extends JFrame {
 	}
 
 	public void changeActivePlayer() {
+		if(endedTurn[(activePlayer+1)%2]) return;
 		for (Card card : handCard.get(activePlayer)) {
 			card.removeListeners();
 		}

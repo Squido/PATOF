@@ -33,6 +33,9 @@ public class Field extends JPanel {
 		//this.setVisible(true);
 		return c;
 	}
+	public Card getCard(){
+		return card;
+	}
 	public boolean isEmpty(){
 		return card==null;
 	}
