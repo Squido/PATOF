@@ -29,172 +29,201 @@ public class Card extends JPanel {
 	private MouseMotionAdapter MMAdrag;
 	private MouseAdapter MAdrag;
 	private MouseAdapter MAaim;
-	public Card(GameWindow gw){
+
+	public Card(GameWindow gw) {
 		super();
-		gameWindow=gw;
-		isActivePlayerCard=true;
-		try{
+		gameWindow = gw;
+		isActivePlayerCard = true;
+		try {
 			reverseImage = ImageIO.read(new File("graphics/reverse.jpg"));
 			displayImage = reverseImage;
-		}catch(Exception e){}
-		
+		} catch (Exception e) {
+		}
+
 		reversed = true;
 		this.setPreferredSize(new Dimension(78, 110));
 		generateListeners();
 		addListeners();
 		repaint();
-		inHand=true;
+		inHand = true;
 	}
-	public Card(GameWindow gw,String img){
+
+	public Card(GameWindow gw, String img) {
 		super();
-		gameWindow=gw;
-		isActivePlayerCard=true;
-		
-		try{
-		image = ImageIO.read(new File(img));
-		displayImage = image;
-		}catch(Exception e){}
-		try{
+		gameWindow = gw;
+		isActivePlayerCard = true;
+
+		try {
+			image = ImageIO.read(new File(img));
+			displayImage = image;
+		} catch (Exception e) {
+		}
+		try {
 			reverseImage = ImageIO.read(new File("graphics/reverse.jpg"));
-		}catch(Exception e){}
-		
+		} catch (Exception e) {
+		}
+
 		reversed = false;
 		this.setPreferredSize(new Dimension(78, 110));
 		generateListeners();
 		addListeners();
 		repaint();
-		inHand=true;
+		inHand = true;
 	}
-	
-	public Image getImage(){
+
+	public Image getImage() {
 		return image;
 	}
-	
-	public Card getCard(){
+
+	public Card getCard() {
 		return this;
 	}
-	private void generateListeners(){
-		MMAdrag=new MouseMotionAdapter(){
+
+	private void generateListeners() {
+		MMAdrag = new MouseMotionAdapter() {
 			@Override
-			public void mouseDragged(MouseEvent e){
-				Card card = (Card)e.getSource();
-                card.setBounds(card.getX()+e.getX()-39,card.getY()+e.getY()-55, card.getWidth(), card.getHeight());
-                repaint();
+			public void mouseDragged(MouseEvent e) {
+				Card card = (Card) e.getSource();
+				card.setBounds(card.getX() + e.getX() - 39,
+						card.getY() + e.getY() - 55, card.getWidth(),
+						card.getHeight());
+				repaint();
 			}
 		};
-		MAdrag = new MouseAdapter(){
-			private int oldX,oldY,x,y;
+		MAdrag = new MouseAdapter() {
+			private int oldX, oldY, x, y;
+
 			@Override
-			public void mousePressed(MouseEvent e){
-				Card card = (Card)e.getSource();
+			public void mousePressed(MouseEvent e) {
+				Card card = (Card) e.getSource();
 				card.gameWindow.getPane().moveToFront(card);
-				oldX=card.getX();
-				oldY=card.getY();
-				x=card.getLocationOnScreen().x;
-				y=card.getLocationOnScreen().y;
+				oldX = card.getX();
+				oldY = card.getY();
+				x = card.getLocationOnScreen().x;
+				y = card.getLocationOnScreen().y;
 			}
+
 			@Override
-			public void mouseReleased(MouseEvent e){
-				Card card = (Card)e.getSource();
-				if(!gameWindow.putCardOnField(card.getX()+39,card.getY()+55, card)){
-					card.setBounds(oldX,oldY, card.getWidth(), card.getHeight());
+			public void mouseReleased(MouseEvent e) {
+				Card card = (Card) e.getSource();
+				if (!gameWindow.putCardOnField(card.getX() + 39,
+						card.getY() + 55, card)) {
+					card.setBounds(oldX, oldY, card.getWidth(),
+							card.getHeight());
 				}
-					
+
 			}
+
 			@Override
-			public void mouseClicked(MouseEvent e){
-				Card card = (Card)e.getSource();
-				BigCardDisplayer big = new BigCardDisplayer(card.image,gameWindow);
+			public void mouseClicked(MouseEvent e) {
+				Card card = (Card) e.getSource();
+				BigCardDisplayer big = new BigCardDisplayer(card.image,
+						gameWindow);
 			}
 		};
-		MAaim = new MouseAdapter(){
+		MAaim = new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e){
-				System.out.print("clicked");
-				Card card = (Card)e.getSource();
-				//zamiast tego mam od karty pobrac liste mozliwosci
+			public void mouseClicked(MouseEvent e) {
+				Card card = (Card) e.getSource();
+				// zamiast tego mam od karty pobrac liste mozliwosci
 				DefaultListModel<String> dLM = new DefaultListModel<String>();
 				dLM.addElement("attack");
 				dLM.addElement("skill1");
 				dLM.addElement("skill2");
 				dLM.addElement("defend");
 				//
-				SkillListDisplayer sLD = new SkillListDisplayer(card,dLM);
+				SkillListDisplayer sLD = new SkillListDisplayer(card, dLM);
 				gameWindow.getPane().add(sLD);
-				sLD.setListBounds(card.getX()+39,card.getY()+ 55, 161, 18*dLM.size());
-				JList list=sLD.getList();
+				sLD.setListBounds(card.getX() + 39, card.getY() + 55, 161,
+						18 * dLM.size());
+				JList list = sLD.getList();
+				card.gameWindow.getPane().add(sLD);
 				card.gameWindow.getPane().add(list);
+				card.gameWindow.getPane().moveToFront(sLD);
 				card.gameWindow.getPane().moveToFront(list);
-				card.gameWindow.getPane().repaint();
 			}
 		};
 	}
-	
-	public void addListeners(){
-		haveListeners=true;
-		
+
+	public void addListeners() {
+		haveListeners = true;
+
 		addMouseMotionListener(MMAdrag);
 		addMouseListener(MAdrag);
 	}
-	public void removeListeners(){
-		if(haveListeners){
+
+	public void removeListeners() {
+		if (haveListeners) {
 			removeMouseMotionListener(MMAdrag);
 			removeMouseListener(MAdrag);
-			haveListeners=false;
+			haveListeners = false;
 		}
 	}
-	public void changeListeners(){
-		if(haveListeners){
+
+	public void changeListeners() {
+		if (haveListeners) {
 			removeMouseMotionListener(MMAdrag);
 			removeMouseListener(MAdrag);
-			haveListeners=false;
-		}else{
+			haveListeners = false;
+		} else {
 			addMouseListener(MAdrag);
 			addMouseMotionListener(MMAdrag);
-			haveListeners=true;
+			haveListeners = true;
 		}
 	}
-	
-	public boolean isInHand(){
+
+	public boolean isInHand() {
 		return inHand;
 	}
-	public void setInHand(boolean h){
+
+	public void setInHand(boolean h) {
 		inHand = h;
 	}
-	public boolean isInField(){
-		return field!=null;
+
+	public boolean isInField() {
+		return field != null;
 	}
-	public void setField(Field f){
+
+	public void setField(Field f) {
 		field = f;
 	}
-	public Field getField(){
+
+	public Field getField() {
 		return field;
 	}
-	public boolean isReversed(){
+
+	public boolean isReversed() {
 		return reversed;
 	}
-	public void reverse(){
-		reversed=!reversed;
-		if(reversed)displayImage=reverseImage;
-		else displayImage=image;
+
+	public void reverse() {
+		reversed = !reversed;
+		if (reversed)
+			displayImage = reverseImage;
+		else
+			displayImage = image;
 		repaint();
 	}
+
 	@Override
-	protected void paintComponent(Graphics g){
+	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		if(displayImage!=null)g.drawImage(displayImage,0,0,null);
+		if (displayImage != null)
+			g.drawImage(displayImage, 0, 0, null);
 	}
-	
-	public void changeActivePlayer(){
-		isActivePlayerCard=!isActivePlayerCard;
+
+	public void changeActivePlayer() {
+		isActivePlayerCard = !isActivePlayerCard;
 		reverse();
 		removeListeners();
 	}
-	public void addAimListener(){
+
+	public void addAimListener() {
 		removeListeners();
 		addMouseListener(MAaim);
 	}
-	public GameWindow getGameWindow(){
+
+	public GameWindow getGameWindow() {
 		return gameWindow;
 	}
 }

@@ -20,11 +20,8 @@ public class GameWindow extends JFrame {
 	private JButton decks[];
 	private JButton graveyards[];
 	private JButton endTurn;
-	private int activePlayer;
-	private boolean endedTurn[];
 
 	public GameWindow(GUIController gui) {
-		activePlayer = 0;
 		pane = getLayeredPane();
 		setResizable(false);
 		controller = gui;
@@ -32,7 +29,6 @@ public class GameWindow extends JFrame {
 		handCard.add(new ArrayList<Card>());
 		graveyards = new JButton[2];
 		decks = new JButton[2];
-		endedTurn = new boolean[2];
 
 		this.boardGenerator();
 		setStartingHand();
@@ -46,22 +42,23 @@ public class GameWindow extends JFrame {
 		endTurn = new JButton("endTurn");
 		endTurn.setBounds(900, 300, 100, 50);
 		add(endTurn);
-		endTurn.addActionListener(new ActionListener(){
+		endTurn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				endedTurn[activePlayer]=true;
-				if(endedTurn[0]&&endedTurn[1]){
+				controller.setEndedTurn(controller.getActivePlayer(), true);
+				if (controller.isEndedTurn(0) && controller.isEndedTurn(1)) {
 					controller.setPlacementFlag(false);
 					controller.setAimingFlag(true);
-					endedTurn[0]=false;
-					endedTurn[1]=false;
-					for(Field f[] : CardsOnBoard) 
-						for(Field field : f) 
-							if(field.getCard()!=null)field.getCard().addAimListener();
+					controller.setEndedTurn(0, false);
+					controller.setEndedTurn(1, false);
+					for (Field f[] : CardsOnBoard)
+						for (Field field : f)
+							if (field.getCard() != null)
+								field.getCard().addAimListener();
 				}
 				changeActivePlayer();
 			}
-			
+
 		});
 	}
 
@@ -108,7 +105,7 @@ public class GameWindow extends JFrame {
 	}
 
 	private void generateHand(int player) {
-		for (int i = 0; i < handCard.size(); i++) {
+		for (int i = 0; i < handCard.get(player).size(); i++) {
 			pane.remove(handCard.get(player).get(i));
 		}
 		for (int i = 0; i < handCard.get(player).size(); i++) {
@@ -122,36 +119,69 @@ public class GameWindow extends JFrame {
 	}
 
 	public void addCard(Card card) {
-		handCard.get(activePlayer).add(card);
-		generateHand(activePlayer);
+		handCard.get(controller.getActivePlayer()).add(card);
+		generateHand(controller.getActivePlayer());
 		repaint();
 	}
 
 	public Card getCard(int index) {
-		Card card = handCard.get(activePlayer).get(index).getCard();
-		getLayeredPane().remove(handCard.get(activePlayer).get(index));
-		handCard.get(activePlayer).remove(index);
+		Card card = handCard.get(controller.getActivePlayer()).get(index)
+				.getCard();
+		getLayeredPane().remove(
+				handCard.get(controller.getActivePlayer()).get(index));
+		handCard.get(controller.getActivePlayer()).remove(index);
 		repaint();
 		return card;
 	}
 
-	public boolean putCardOnField(int x,int y,Card card){
-		for(int i=0;i<2;i++){
-			for(int j=0;j<5;j++){
-				if(x>=200+120*j && x<=200+120*j+78 && y>=768/7+260+115*i-235*activePlayer && y<=768/7+260+115*i+110-235*activePlayer && CardsOnBoard[i+2-2*activePlayer][j].isEmpty()){
-					if(card.isInField()){
+	public boolean putCardOnField(int x, int y, Card card) {
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 5; j++) {
+				if (x >= 200 + 120 * j
+						&& x <= 200 + 120 * j + 78
+						&& y >= 768 / 7 + 260 + 115 * i - 235
+								* controller.getActivePlayer()
+						&& y <= 768 / 7 + 260 + 115 * i + 110 - 235
+								* controller.getActivePlayer()
+						&& CardsOnBoard[i + 2 - 2
+								* controller.getActivePlayer()][j].isEmpty()) {
+					if (card.isInField()) {
 						card.getField().pickCard();
 					}
 					card.removeListeners();
-					CardsOnBoard[i+2-2*activePlayer][j].putCard(card);
-					card.setBounds(CardsOnBoard[i+2-2*activePlayer][j].getX(),CardsOnBoard[i+2-2*activePlayer][j].getY(),78,110);
-					if(card.isInHand()){
-						//controller.getGameController().removeCardFromHand(activePlayer, handCard.get(activePlayer).indexOf(card));
-						controller.getGameController().addCardToBoard(i+2-2*activePlayer, j, controller.getGameController().removeCardFromHand(activePlayer, handCard.get(activePlayer).indexOf(card)));
-						getCard(handCard.get(activePlayer).indexOf(card));
+					CardsOnBoard[i + 2 - 2 * controller.getActivePlayer()][j]
+							.putCard(card);
+					card.setBounds(
+							CardsOnBoard[i + 2 - 2
+									* controller.getActivePlayer()][j].getX(),
+							CardsOnBoard[i + 2 - 2
+									* controller.getActivePlayer()][j].getY(),
+							78, 110);
+					if (card.isInHand()) {
+						// controller.getGameController().removeCardFromHand(activePlayer,
+						// handCard.get(activePlayer).indexOf(card));
+						controller
+								.getGameController()
+								.addCardToBoard(
+										i + 2 - 2
+												* controller.getActivePlayer(),
+										j,
+										controller
+												.getGameController()
+												.removeCardFromHand(
+														controller
+																.getActivePlayer(),
+														handCard.get(
+																controller
+																		.getActivePlayer())
+																.indexOf(card)));
+						getCard(handCard.get(controller.getActivePlayer())
+								.indexOf(card));
+						generateHand(controller.getActivePlayer());
 						changeActivePlayer();
 						getLayeredPane().add(card);
 						card.setInHand(false);
+
 					}
 					return true;
 				}
@@ -161,12 +191,10 @@ public class GameWindow extends JFrame {
 	}
 
 	public ArrayList<Card> getMyHand() {
-		return handCard.get(activePlayer);
+		return handCard.get(controller.getActivePlayer());
 	}
 
 	private void setStartingHand() {
-		endedTurn[0]=false;
-		endedTurn[1]=false;
 		List<String> images = controller.getGameController().getImages(0);
 		for (String img : images) {
 			handCard.get(0).add(new Card(this, img));
@@ -184,12 +212,15 @@ public class GameWindow extends JFrame {
 	}
 
 	public void changeActivePlayer() {
-		if(endedTurn[(activePlayer+1)%2]) return;
-		for (Card card : handCard.get(activePlayer)) {
+		if (controller.isEndedTurn((controller.getActivePlayer() + 1) % 2))
+			return;
+		for (Card card : handCard.get(controller.getActivePlayer())) {
+			card.reverse();
 			card.removeListeners();
 		}
-		activePlayer = (activePlayer + 1) % 2;
-		for (Card card : handCard.get(activePlayer)) {
+		controller.changeActivePlayer();
+		for (Card card : handCard.get(controller.getActivePlayer())) {
+			card.reverse();
 			card.addListeners();
 		}
 	}

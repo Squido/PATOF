@@ -13,13 +13,14 @@ public class GameController {
 	private static List<Activation> b_activations;
 	private static List<Activation> e_activations;
 	private GUIController gui;
+	private int activePlayer;
 	// do testow tylko
 	private Deck deck0;
 	private Deck deck1;
 	private Card card;
 
 	public GameController(GUIController controller) {
-		gui=controller;
+		gui = controller;
 		board = new Board();
 		turnCounter = 0;
 		b_activations = new LinkedList<Activation>();
@@ -64,9 +65,10 @@ public class GameController {
 	public void addCardToBoard(int x, int y, Card card) {
 		board.addCard(x, y, card);
 	}
-	
-	public boolean isPlaceable(Card card, int owner){
-		return players[owner].getHero().getMaxHp() - players[owner].getHero().getHp() > card.getCost();
+
+	public boolean isPlaceable(Card card, int owner) {
+		return players[owner].getHero().getMaxHp()
+				- players[owner].getHero().getHp() > card.getCost();
 	}
 
 	// fight
@@ -126,5 +128,13 @@ public class GameController {
 	public static void removeActivation(Activation a) {
 		b_activations.remove(a);
 		e_activations.remove(a);
+	}
+
+	public int getActivePlayer() {
+		return activePlayer;
+	}
+
+	public void changeActivePlayer() {
+		activePlayer = (activePlayer + 1) % 2;
 	}
 }
