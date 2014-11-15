@@ -15,7 +15,7 @@ import cont.GUIController;
 public class GameWindow extends JFrame {
 	private JLayeredPane pane;
 	private GUIController controller;
-	private Field CardsOnBoard[][];
+	private Field cardsOnBoard[][];
 	private ArrayList<ArrayList<Card>> handCard = new ArrayList<ArrayList<Card>>();
 	private JButton decks[];
 	private JButton graveyards[];
@@ -47,14 +47,7 @@ public class GameWindow extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				controller.setEndedTurn(controller.getActivePlayer(), true);
 				if (controller.isEndedTurn(0) && controller.isEndedTurn(1)) {
-					controller.setPlacementFlag(false);
-					controller.setAimingFlag(true);
-					controller.setEndedTurn(0, false);
-					controller.setEndedTurn(1, false);
-					for (Field f[] : CardsOnBoard)
-						for (Field field : f)
-							if (field.getCard() != null)
-								field.getCard().addAimListener();
+					startAimingTurn();
 				}
 				changeActivePlayer();
 			}
@@ -63,21 +56,21 @@ public class GameWindow extends JFrame {
 	}
 
 	private void boardGenerator() {
-		CardsOnBoard = new Field[4][5];
+		cardsOnBoard = new Field[4][5];
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 5; j++) {
-				CardsOnBoard[i][j] = new Field();
-				CardsOnBoard[i][j].setBounds(200 + 120 * j, 768 / 7 + 25 + 115
+				cardsOnBoard[i][j] = new Field();
+				cardsOnBoard[i][j].setBounds(200 + 120 * j, 768 / 7 + 25 + 115
 						* i, 78, 110);
-				add(CardsOnBoard[i][j]);
+				add(cardsOnBoard[i][j]);
 			}
 		}
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 5; j++) {
-				CardsOnBoard[i + 2][j] = new Field();
-				CardsOnBoard[i + 2][j].setBounds(200 + 120 * j, 768 / 7 + 260
+				cardsOnBoard[i + 2][j] = new Field();
+				cardsOnBoard[i + 2][j].setBounds(200 + 120 * j, 768 / 7 + 260
 						+ 115 * i, 78, 110);
-				add(CardsOnBoard[i + 2][j]);
+				add(cardsOnBoard[i + 2][j]);
 			}
 		}
 	}
@@ -134,6 +127,10 @@ public class GameWindow extends JFrame {
 		return card;
 	}
 
+	public JButton getGraveyard(int player){
+		return graveyards[player];
+	}
+	
 	public boolean putCardOnField(int x, int y, Card card) {
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 5; j++) {
@@ -143,46 +140,31 @@ public class GameWindow extends JFrame {
 								* controller.getActivePlayer()
 						&& y <= 768 / 7 + 260 + 115 * i + 110 - 235
 								* controller.getActivePlayer()
-						&& CardsOnBoard[i + 2 - 2
+						&& cardsOnBoard[i + 2 - 2
 								* controller.getActivePlayer()][j].isEmpty()) {
-					if (card.isInField()) {
-						card.getField().pickCard();
-					}
-					card.removeListeners();
-					CardsOnBoard[i + 2 - 2 * controller.getActivePlayer()][j]
+
+					card.removePlacingListeners();
+					cardsOnBoard[i + 2 - 2 * controller.getActivePlayer()][j]
 							.putCard(card);
 					card.setBounds(
-							CardsOnBoard[i + 2 - 2
+							cardsOnBoard[i + 2 - 2
 									* controller.getActivePlayer()][j].getX(),
-							CardsOnBoard[i + 2 - 2
+							cardsOnBoard[i + 2 - 2
 									* controller.getActivePlayer()][j].getY(),
 							78, 110);
-					if (card.isInHand()) {
-						// controller.getGameController().removeCardFromHand(activePlayer,
-						// handCard.get(activePlayer).indexOf(card));
-						controller
-								.getGameController()
-								.addCardToBoard(
-										i + 2 - 2
-												* controller.getActivePlayer(),
-										j,
-										controller
-												.getGameController()
-												.removeCardFromHand(
-														controller
-																.getActivePlayer(),
-														handCard.get(
-																controller
-																		.getActivePlayer())
-																.indexOf(card)));
-						getCard(handCard.get(controller.getActivePlayer())
-								.indexOf(card));
-						generateHand(controller.getActivePlayer());
-						changeActivePlayer();
-						getLayeredPane().add(card);
-						card.setInHand(false);
+					controller.getGameController().addCardToBoard(
+							i + 2 - 2 * controller.getActivePlayer(),
+							j,
+							controller.getGameController().removeCardFromHand(
+									controller.getActivePlayer(),
+									handCard.get(controller.getActivePlayer())
+											.indexOf(card)));
+					getCard(handCard.get(controller.getActivePlayer()).indexOf(
+							card));
+					generateHand(controller.getActivePlayer());
+					changeActivePlayer();
+					getLayeredPane().add(card);
 
-					}
 					return true;
 				}
 			}
@@ -214,15 +196,95 @@ public class GameWindow extends JFrame {
 	public void changeActivePlayer() {
 		if (controller.isEndedTurn((controller.getActivePlayer() + 1) % 2))
 			return;
+		if (controller.isPlacementFlag())
+			changePlacingPlayer();
+		else if (controller.isAimingFlag())
+			changeAimPlayer();
+	}
+
+	public void changeAimPlayer() {
+
+	}
+
+	public void changePlacingPlayer() {
 		for (Card card : handCard.get(controller.getActivePlayer())) {
 			card.reverse();
-			card.removeListeners();
+			card.removePlacingListeners();
 		}
 		controller.changeActivePlayer();
 		for (Card card : handCard.get(controller.getActivePlayer())) {
 			card.reverse();
-			card.addListeners();
+			card.addPlacingListeners();
 		}
 	}
 
+	//mniej wiecej takie funkcje powinny byc w gameControlerze 
+	//i tylko wywolywac odpowiednie funkcje w GUIControlerze np addAimListener dla odpowiednich kart itp***
+	public void startAimingTurn() {
+		controller.setPlacementFlag(false);
+		controller.setAimingFlag(true);
+		controller.setEndedTurn(0, false);
+		controller.setEndedTurn(1, false);
+		int maxInit = 0;
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 5; j++) {
+				maxInit = Math.max(controller.getGameController().getBoard()
+						.getCard(i, j).getInit(), maxInit);
+			}
+		}
+		nextAim(maxInit);
+	}
+
+	public void nextAim(int init) {
+		if (controller.isEndedTurn(0) && controller.isEndedTurn(1)) {
+			if (init != 0)
+				init--;
+			else {
+				startPlacingTurn();
+			}
+		}
+		int counter = 0;
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 5; j++) {
+				if (controller.getGameController().getBoard()
+						.getCard(i + 2 - 2 * controller.getActivePlayer(), j)
+						.getInit() == init) {
+					cardsOnBoard[i + 2 - 2 * controller.getActivePlayer()][j]
+							.getCard().addAimListener();
+					counter++;
+				}
+			}
+		}
+		if (counter == 0) {
+			controller.setEndedTurn(controller.getActivePlayer(), true);
+			nextAim(init);
+		}
+	}
+
+	public void startPlacingTurn() {
+		
+	}
+	//***
+	
+	public Field[][] getBoard(){
+		return cardsOnBoard;
+	}
+	
+	public void removeListeners(){
+		for (Card card : handCard.get(controller.getActivePlayer())) {
+			card.removePlacingListeners();
+			card.reverse();
+		}
+		for (Card card : handCard.get((controller.getActivePlayer()+1)%2)) {
+			card.removePlacingListeners();
+			card.reverse();
+		}
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 5; j++) {
+				cardsOnBoard[i][j].getCard().removePlacingListeners();
+				cardsOnBoard[i][j].getCard().removeAimListener();
+			}
+		}
+	}
+	
 }

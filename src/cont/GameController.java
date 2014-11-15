@@ -139,4 +139,7 @@ public class GameController {
 	public void changeActivePlayer() {
 		activePlayer = (activePlayer + 1) % 2;
 	}
+	public Board getBoard(){
+		return board;
+	}
 }

@@ -24,16 +24,16 @@ public class Card extends JPanel {
 	private boolean inHand;
 	private Field field;
 	private boolean reversed;
-	private boolean isActivePlayerCard;
-	private boolean haveListeners;
+	private boolean haveDragListeners;
+	private boolean haveAimListeners;
 	private MouseMotionAdapter MMAdrag;
 	private MouseAdapter MAdrag;
 	private MouseAdapter MAaim;
+	private int owner;
 
 	public Card(GameWindow gw) {
 		super();
 		gameWindow = gw;
-		isActivePlayerCard = true;
 		try {
 			reverseImage = ImageIO.read(new File("graphics/reverse.jpg"));
 			displayImage = reverseImage;
@@ -43,7 +43,7 @@ public class Card extends JPanel {
 		reversed = true;
 		this.setPreferredSize(new Dimension(78, 110));
 		generateListeners();
-		addListeners();
+		//addPlacingListeners();
 		repaint();
 		inHand = true;
 	}
@@ -51,7 +51,6 @@ public class Card extends JPanel {
 	public Card(GameWindow gw, String img) {
 		super();
 		gameWindow = gw;
-		isActivePlayerCard = true;
 
 		try {
 			image = ImageIO.read(new File(img));
@@ -66,7 +65,7 @@ public class Card extends JPanel {
 		reversed = false;
 		this.setPreferredSize(new Dimension(78, 110));
 		generateListeners();
-		addListeners();
+		//addPlacingListeners();
 		repaint();
 		inHand = true;
 	}
@@ -145,30 +144,18 @@ public class Card extends JPanel {
 		};
 	}
 
-	public void addListeners() {
-		haveListeners = true;
+	public void addPlacingListeners() {
+		haveDragListeners = true;
 
 		addMouseMotionListener(MMAdrag);
 		addMouseListener(MAdrag);
 	}
 
-	public void removeListeners() {
-		if (haveListeners) {
+	public void removePlacingListeners() {
+		if (haveDragListeners) {
 			removeMouseMotionListener(MMAdrag);
 			removeMouseListener(MAdrag);
-			haveListeners = false;
-		}
-	}
-
-	public void changeListeners() {
-		if (haveListeners) {
-			removeMouseMotionListener(MMAdrag);
-			removeMouseListener(MAdrag);
-			haveListeners = false;
-		} else {
-			addMouseListener(MAdrag);
-			addMouseMotionListener(MMAdrag);
-			haveListeners = true;
+			haveDragListeners = false;
 		}
 	}
 
@@ -180,11 +167,11 @@ public class Card extends JPanel {
 		inHand = h;
 	}
 
-	public boolean isInField() {
+	public boolean isOnBoard() {
 		return field != null;
 	}
 
-	public void setField(Field f) {
+	public void setOnBoard(Field f) {
 		field = f;
 	}
 
@@ -213,17 +200,32 @@ public class Card extends JPanel {
 	}
 
 	public void changeActivePlayer() {
-		isActivePlayerCard = !isActivePlayerCard;
 		reverse();
-		removeListeners();
+		removePlacingListeners();
 	}
 
 	public void addAimListener() {
-		removeListeners();
 		addMouseListener(MAaim);
+		haveAimListeners=true;
 	}
-
+	
+	public void removeAimListener(){
+		if(haveAimListeners){
+			removeMouseListener(MAaim);
+			haveAimListeners=false;
+		}
+	}
+	
 	public GameWindow getGameWindow() {
 		return gameWindow;
 	}
+
+	public int getOwner(){
+		return owner;
+	}
+	
+	public void setOwner(int player){
+		owner = player;
+	}
+	
 }

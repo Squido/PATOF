@@ -2,6 +2,8 @@ package cont;
 
 import java.util.List;
 
+import javax.swing.ImageIcon;
+
 import GUI.GameWindow;
 import GUI.MainMenu;
 import GUI.OptionsWindow;
@@ -99,14 +101,36 @@ public class GUIController {
 	}
 
 	public void removeCardFromBoard(int x, int y) {
-		// TODO Auto-generated method stub
-		
+		gameWindow.getPane().remove(gameWindow.getBoard()[x][y].getCard());
+		gameWindow.repaint();
 	}
 
 	public void killCardFromBoard(int x, int y) {
-		// przesun¹æ na graveyard
+		// przesun¹æ na graveyard -> zrób sobie liste kart na cmentarzu w modelu bo zapewne sie przyda...
+		//np jak jakis spell czy cus bedzie pozwalal przywrocic karte z cmentarza
+		//tak ja tez sobie zrobie tak¹ liste bo zapewne bede chcial wyswietlac karty z cmentarza po kliknieciu go ale juz teraz mi sie nie chce
+		gameWindow.getGraveyard(gameWindow.getBoard()[x][y].getCard().getOwner()).setIcon(new ImageIcon(gameWindow.getBoard()[x][y].getCard().getImage()));
 		removeCardFromBoard(x, y);
-		// TODO Auto-generated method stub
 		
 	}
+	
+	public void addPlacingListenersInHand(int index){
+		//dodaje mozliwosc polozenia karty z reki na stol		
+		gameWindow.getCard(index).addPlacingListeners();
+	}
+	public void addPlacingListenerOnBoard(int x,int y){
+		//dodaje mozliwosc przesuniecia karty bedacej na stole
+		gameWindow.getBoard()[x][y].getCard().addPlacingListeners();
+	}
+	public void addAimListener(int x,int y){
+		//dodaje mozliwosc wybrania karty ktora chcemy atakowac
+		//i w zasadzie zamiast tych funkcji mozna zrobic funkcje biorace listy
+		//ale w javie nie ma klasy pair i nie chcialo mi sie jej pisac		
+		gameWindow.getBoard()[x][y].getCard().addAimListener();
+	}
+	public void changePlayer(){
+		//usuwa wszystkie listenery i odkrywa/zakrywa karty odpowiednich graczy
+		gameWindow.removeListeners();
+	}
+
 }

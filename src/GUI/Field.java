@@ -23,12 +23,12 @@ public class Field extends JPanel {
 	public void putCard(Card cd){
 		card=cd;
 		//this.setVisible(false);
-		card.setField(this);
+		card.setOnBoard(this);
 //		image=card.getImage();
 	}
 	public Card pickCard(){
 		Card c=card;
-		card.setField(null);
+		card.setOnBoard(null);
 		card=null;
 		//this.setVisible(true);
 		return c;
