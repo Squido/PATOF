@@ -1,6 +1,5 @@
 package cont;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,7 +12,6 @@ public class GameController extends Thread {
 	private List<Activation> b_activations;
 	private List<Activation> e_activations;
 	private GUIController gui;
-	private boolean placementFlag, fightFlag;
 	// do testow tylko
 	private Deck deck0;
 	private Deck deck1;
@@ -23,6 +21,7 @@ public class GameController extends Thread {
 		gui = controller;
 		board = new Board();
 		turnCounter = 0;
+		activePlayer = 0;
 		b_activations = new LinkedList<Activation>();
 		e_activations = new LinkedList<Activation>();
 
@@ -41,6 +40,9 @@ public class GameController extends Thread {
 		// koniec testu
 		players[0].drawStartingHand();
 		players[1].drawStartingHand();
+	}
+	
+	public void run(){
 		beginTurn();
 	}
 
@@ -63,56 +65,31 @@ public class GameController extends Thread {
 
 	// placement
 	private synchronized void placingPhase() {
-		int whoEnded = -1, tmp = 0;
-		placementFlag = true;
-		while (placementFlag) {
-			for (int i = 0; i < 20; i++) {
-				if (board.getCard(i / 5, i % 5) != null) {
-					tmp++;// liczenie kart na stole
-				}
-			}
+		gui.setEndPlacement(false);
+		boolean changePlayer = true;
+		while (gui.isEndPlacement()) {
 			addPlacementListeners();
 			try {
 				wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			for (int i = 0; i < 20; i++) {
-				if (board.getCard(i / 5, i % 5) != null) {
-					tmp--;// jak ¿adna nie dosz³a, to koniec dla 1 gracza
+			if (isPlaceable(players[activePlayer].getHand().getCard(gui.getFrom_y()), activePlayer)) {
+				gui.addPlacementCardToBoard();
+				board.addCard(gui.getTo_x(), gui.getTo_y(), players[activePlayer].getHand().removeCard(gui.getFrom_y()));
+				if (gui.isEndPlacement() && changePlayer) {
+					changePlayer = false;
+					gui.setEndPlacement(false);
+				} 
+				if(changePlayer){
+					activePlayer = (activePlayer + 1) % 2;
+					gui.changePlayer();
 				}
-			}
-			if (tmp == 0 && whoEnded == -1) {
-				activePlayer = (activePlayer + 1) % 2;
-				gui.changePlayer();
 			} else {
-				break;
+				gui.returnPlacementCardToHand();
 			}
 		}
-		while (placementFlag) {
-			tmp = 0;
-			if (whoEnded == -1) {
-				whoEnded = activePlayer;
-			}
-			for (int i = 0; i < 20; i++) {
-				if (board.getCard(i / 5, i % 5) != null) {
-					tmp++; // liczenie kart na stole
-				}
-			}
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			for (int i = 0; i < 20; i++) {
-				if (board.getCard(i / 5, i % 5) != null) {
-					tmp--;
-				}
-			}
-			if (tmp != 0) { // jak ¿adna nie dosz³a, to koniec
-				endPlacement();
-			}
-		}
+		endPlacement();
 	}
 
 	private synchronized void addPlacementListeners() {
@@ -125,23 +102,19 @@ public class GameController extends Thread {
 	private synchronized void endPlacement() {
 		activePlayer = (activePlayer + 1) % 2;
 		gui.changePlayer();
-		placementFlag = false;
 		fightPhase();
 	}
 
-	public synchronized void addCardToBoard(int x, int y, Card card) {
-		board.addCard(x, y, card);
-	}
-
-	public synchronized boolean isPlaceable(Card card, int owner) {
+	private synchronized boolean isPlaceable(Card card, int owner) {
 		return players[owner].getHero().getMaxHp()
 				- players[owner].getHero().getHp() > card.getCost();
 	}
 
 	// fight
-	private synchronized void fightPhase(){
-		
+	private synchronized void fightPhase() {
+		endTurn();
 	}
+
 	private synchronized void attack(int x_att, int y_att, int x_def, int y_def) {
 		board.getCard(x_att, y_att).attack(board.getCard(x_def, y_def));
 		if (board.getCard(x_att, y_att).getHp() <= 0) {
@@ -159,6 +132,7 @@ public class GameController extends Thread {
 		for (Activation i : e_activations) {
 			i.activate();
 		}
+		beginTurn();
 	}
 
 	public synchronized int getTurnNo() {
@@ -167,10 +141,6 @@ public class GameController extends Thread {
 
 	public synchronized void draw(int player) {
 		addCardToHand(player, players[player].draw());
-	}
-
-	private synchronized Card removeCardFromHand(int player, int card) {
-		return players[player].getHand().removeCard(card);
 	}
 
 	private synchronized void addCardToHand(int player, Card card) {

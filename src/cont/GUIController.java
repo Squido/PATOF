@@ -13,8 +13,8 @@ public class GUIController {
 	private MainMenu mainMenu;
 	private OptionsWindow optionsWindow;
 	private GameController game;
-	private boolean placementFlag;
-	private boolean aimingFlag;
+	private int from_x, from_y, to_x, to_y;
+	private boolean endPlacement;
 	private boolean endedTurn[];
 
 	public GUIController() {
@@ -38,8 +38,6 @@ public class GUIController {
 		game = new GameController(this);
 		gameWindow = new GameWindow(this);
 		gameWindow.setVisible(true);
-		placementFlag = true;
-		aimingFlag = false;
 		endedTurn = new boolean[2];
 		endedTurn[0] = false;
 		endedTurn[1] = false;
@@ -68,22 +66,6 @@ public class GUIController {
 		return game;
 	}
 
-	public boolean isPlacementFlag() {
-		return placementFlag;
-	}
-
-	public void setPlacementFlag(boolean f) {
-		placementFlag = f;
-	}
-
-	public boolean isAimingFlag() {
-		return aimingFlag;
-	}
-
-	public void setAimingFlag(boolean f) {
-		aimingFlag = f;
-	}
-
 	public boolean isEndedTurn(int player) {
 		return endedTurn[player];
 	}
@@ -94,10 +76,6 @@ public class GUIController {
 
 	public int getActivePlayer() {
 		return game.getActivePlayer();
-	}
-
-	public void changeActivePlayer() {
-		game.changeActivePlayer();
 	}
 
 	public void removeCardFromBoard(int x, int y) {
@@ -131,6 +109,66 @@ public class GUIController {
 	public void changePlayer(){
 		//usuwa wszystkie listenery i odkrywa/zakrywa karty odpowiednich graczy
 		gameWindow.removeListeners();
+	}
+
+	public int getFrom_x() {
+		return from_x;
+	}
+
+	public void setFrom_x(int from_x) {
+		this.from_x = from_x;
+	}
+
+	public int getFrom_y() {
+		return from_y;
+	}
+
+	public void setFrom_y(int from_y) {
+		this.from_y = from_y;
+	}
+
+	public int getTo_x() {
+		return to_x;
+	}
+
+	public void setTo_x(int to_x) {
+		this.to_x = to_x;
+	}
+
+	public int getTo_y() {
+		return to_y;
+	}
+
+	public void setTo_y(int to_y) {
+		this.to_y = to_y;
+	}
+
+	public boolean isEndPlacement() {
+		return endPlacement;
+	}
+
+	public void setEndPlacement(boolean endPlacement) {
+		this.endPlacement = endPlacement;
+	}
+
+	public void addCardToBoard() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void returnCardToHand() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void addPlacementCardToBoard() {
+		addCardToBoard(); // z reki active playera karte o indeksie From_y na plansze do To_x To_y
+		
+	}
+
+	public void returnPlacementCardToHand() {
+		returnCardToHand(); // z reki active playera karte o indeksie From_y do tego samego miejsca
+		
 	}
 
 }

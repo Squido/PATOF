@@ -18,6 +18,10 @@ public class Hand {
 		return card;
 	}
 	
+	public Card getCard(int id){
+		return cards.get(id);
+	}
+	
 	public Card removeCard(int id){
 		return cards.remove(id);
 	}
