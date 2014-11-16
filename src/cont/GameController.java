@@ -6,14 +6,14 @@ import java.util.List;
 
 import mod.*;
 
-public class GameController {
+public class GameController extends Thread {
 	private Player[] players;
 	private Board board;
-	private int turnCounter;
+	private int turnCounter, activePlayer;
 	private List<Activation> b_activations;
 	private List<Activation> e_activations;
 	private GUIController gui;
-	private int activePlayer;
+	private boolean placementFlag, fightFlag;
 	// do testow tylko
 	private Deck deck0;
 	private Deck deck1;
@@ -41,15 +41,15 @@ public class GameController {
 		// koniec testu
 		players[0].drawStartingHand();
 		players[1].drawStartingHand();
-
+		beginTurn();
 	}
 
-	private void bothDraw() {
+	private synchronized void bothDraw() {
 		players[0].draw();
 		players[1].draw();
 	}
 
-	public void beginTurn() {
+	private synchronized void beginTurn() {
 		turnCounter++;
 		// beginning of turn activations
 		for (Activation i : b_activations) {
@@ -58,21 +58,91 @@ public class GameController {
 
 		// draw
 		bothDraw();
-		gui.setPlacementFlag(true);
+		placingPhase();
 	}
 
 	// placement
-	public void addCardToBoard(int x, int y, Card card) {
+	private synchronized void placingPhase() {
+		int whoEnded = -1, tmp = 0;
+		placementFlag = true;
+		while (placementFlag) {
+			for (int i = 0; i < 20; i++) {
+				if (board.getCard(i / 5, i % 5) != null) {
+					tmp++;// liczenie kart na stole
+				}
+			}
+			addPlacementListeners();
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			for (int i = 0; i < 20; i++) {
+				if (board.getCard(i / 5, i % 5) != null) {
+					tmp--;// jak ¿adna nie dosz³a, to koniec dla 1 gracza
+				}
+			}
+			if (tmp == 0 && whoEnded == -1) {
+				activePlayer = (activePlayer + 1) % 2;
+				gui.changePlayer();
+			} else {
+				break;
+			}
+		}
+		while (placementFlag) {
+			tmp = 0;
+			if (whoEnded == -1) {
+				whoEnded = activePlayer;
+			}
+			for (int i = 0; i < 20; i++) {
+				if (board.getCard(i / 5, i % 5) != null) {
+					tmp++; // liczenie kart na stole
+				}
+			}
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			for (int i = 0; i < 20; i++) {
+				if (board.getCard(i / 5, i % 5) != null) {
+					tmp--;
+				}
+			}
+			if (tmp != 0) { // jak ¿adna nie dosz³a, to koniec
+				endPlacement();
+			}
+		}
+	}
+
+	private synchronized void addPlacementListeners() {
+		int tmp = players[activePlayer].getHand().getSize();
+		for (int i = 0; i < tmp; i++) {
+			gui.addPlacingListenersInHand(i);
+		}
+	}
+
+	private synchronized void endPlacement() {
+		activePlayer = (activePlayer + 1) % 2;
+		gui.changePlayer();
+		placementFlag = false;
+		fightPhase();
+	}
+
+	public synchronized void addCardToBoard(int x, int y, Card card) {
 		board.addCard(x, y, card);
 	}
 
-	public boolean isPlaceable(Card card, int owner) {
+	public synchronized boolean isPlaceable(Card card, int owner) {
 		return players[owner].getHero().getMaxHp()
 				- players[owner].getHero().getHp() > card.getCost();
 	}
 
 	// fight
-	public void attack(int x_att, int y_att, int x_def, int y_def) {
+	private synchronized void fightPhase(){
+		
+	}
+	private synchronized void attack(int x_att, int y_att, int x_def, int y_def) {
 		board.getCard(x_att, y_att).attack(board.getCard(x_def, y_def));
 		if (board.getCard(x_att, y_att).getHp() <= 0) {
 			board.removeCard(x_att, y_att);
@@ -84,62 +154,59 @@ public class GameController {
 		}
 	}
 
-	public void endTurn() {
+	private synchronized void endTurn() {
 		// end turn activations
 		for (Activation i : e_activations) {
 			i.activate();
 		}
 	}
 
-	public int getTurnNo() {
+	public synchronized int getTurnNo() {
 		return turnCounter;
 	}
 
-	public void draw(int player) {
-		players[player].draw();
+	public synchronized void draw(int player) {
+		addCardToHand(player, players[player].draw());
 	}
 
-	public Card removeCardFromHand(int player, int card) {
+	private synchronized Card removeCardFromHand(int player, int card) {
 		return players[player].getHand().removeCard(card);
 	}
 
-	public void addCardToHand(int player, Card card) {
+	private synchronized void addCardToHand(int player, Card card) {
 		players[player].getHand().addCard(card);
 	}
 
-	public Hand getHand(int player) {
+	public synchronized Hand getHand(int player) {
 		return players[player].getHand();
 	}
 
-	public List<String> getImages(int player) {
+	public synchronized List<String> getImages(int player) {
 		return players[player].getHand().getCardImages();
 	}
 
-	public Card removeCardFromBoard(int x, int y) {
+	public synchronized Card removeCardFromBoard(int x, int y) {
 		return board.removeCard(x, y);
 	}
 
-	public void addB(Activation a) {
+	public synchronized void addB(Activation a) {
 		b_activations.add(a);
 	}
 
-	public void addE(Activation a) {
+	public synchronized void addE(Activation a) {
 		e_activations.add(a);
 	}
 
-	public void removeActivation(Activation a) {
+	public synchronized void removeActivation(Activation a) {
 		b_activations.remove(a);
 		e_activations.remove(a);
 	}
 
-	public int getActivePlayer() {
+	public synchronized int getActivePlayer() {
 		return activePlayer;
 	}
 
-	public void changeActivePlayer() {
-		activePlayer = (activePlayer + 1) % 2;
-	}
-	public Board getBoard(){
+	public synchronized Board getBoard() {
 		return board;
 	}
 }

@@ -19,8 +19,10 @@ public class Player {
 		hand = new Hand();
 		hand.addCards(deck.draw(7));
 	}
-	public void draw() {
-		hand.addCard(deck.draw());
+	public Card draw() {
+		Card card = deck.draw();
+		hand.addCard(card);
+		return card;
 	}
 
 	public Hand getHand() {
